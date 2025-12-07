@@ -1,248 +1,269 @@
-# KYZLO Quant Platform
+<div align="center">
 
-A production-grade algorithmic trading system built on **Hexagonal Architecture** (Ports & Adapters) with event-driven processing. Designed for low-latency execution, fault tolerance, and clean separation of concerns.
+```
+██╗  ██╗██╗   ██╗███████╗██╗      ██████╗ 
+██║ ██╔╝╚██╗ ██╔╝╚══███╔╝██║     ██╔═══██╗
+█████╔╝  ╚████╔╝   ███╔╝ ██║     ██║   ██║
+██╔═██╗   ╚██╔╝   ███╔╝  ██║     ██║   ██║
+██║  ██╗   ██║   ███████╗███████╗╚██████╔╝
+╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝ ╚═════╝ 
+```
+
+### **Q U A N T &nbsp; P L A T F O R M**
+
+<br>
+
+[![Status](https://img.shields.io/badge/STATUS-CODE_COMPLETE-00C853?style=for-the-badge&labelColor=1a1a2e)](/)
+[![Python](https://img.shields.io/badge/PYTHON-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=1a1a2e)](https://python.org)
+[![Architecture](https://img.shields.io/badge/HEXAGONAL-ARCHITECTURE-FF6B35?style=for-the-badge&labelColor=1a1a2e)](/)
+[![Database](https://img.shields.io/badge/TIMESCALE-DB-FDB515?style=for-the-badge&logo=timescale&logoColor=white&labelColor=1a1a2e)](https://timescale.com)
+[![License](https://img.shields.io/badge/LICENSE-PROPRIETARY-E91E63?style=for-the-badge&labelColor=1a1a2e)](/)
+
+<br>
+
+*A production-grade, event-driven algorithmic trading platform*  
+*Built for zero engineering alpha drag*
+
+<br>
+
+[Getting Started](#-quick-start) · [Architecture](#-system-architecture) · [Features](#-features) · [Configuration](#-configuration)
 
 ---
 
-## Direct Download
+</div>
 
-Run the helper script to generate a zip archive of the current branch and expose it via a lightweight HTTP server:
+<br>
+
+## ◈ &nbsp; Philosophy
+
+> *"The edge isn't in the alpha. It's in the architecture."*
+
+**Kyzlo** moves beyond simple scripts. By implementing **Hexagonal Architecture (Ports & Adapters)**, we decouple trading logic from external infrastructure—enabling seamless broker swaps, bulletproof testing, and institutional-grade reliability.
+
+<br>
+
+---
+
+<br>
+
+## ◈ &nbsp; System Architecture
+
+<div align="center">
+
+```
+                    ┌─────────────────────────────────────────────────────────────┐
+                    │                      A D A P T E R S                        │
+                    │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────────────┐ │
+                    │  │ Alpaca  │  │ Polygon │  │Timescale│  │ AlphaVantage +  │ │
+                    │  │ Broker  │  │ Stream  │  │  Repo   │  │     GNews       │ │
+                    │  └────┬────┘  └────┬────┘  └────┬────┘  └────────┬────────┘ │
+                    └───────┼────────────┼───────────┼─────────────────┼──────────┘
+                            │            │           │                 │
+                            ▼            ▼           ▼                 ▼
+                    ┌─────────────────────────────────────────────────────────────┐
+                    │                  A P P L I C A T I O N                      │
+                    │         ┌──────────────────────────────────┐                │
+                    │         │     ⚡ Async Event Bus ⚡         │                │
+                    │         └──────────────────────────────────┘                │
+                    │    ┌────────────────┐      ┌────────────────┐               │
+                    │    │ ExecutionService│      │  RiskService   │               │
+                    │    └────────┬───────┘      └───────┬────────┘               │
+                    └─────────────┼──────────────────────┼────────────────────────┘
+                                  │                      │
+                                  ▼                      ▼
+                    ╔═════════════════════════════════════════════════════════════╗
+                    ║                     D O M A I N                             ║
+                    ║  ┌─────────┐ ┌─────────┐ ┌──────────┐ ┌──────────────────┐  ║
+                    ║  │ Models  │ │ Events  │ │ Strategy │ │    Risk Rules    │  ║
+                    ║  └─────────┘ └─────────┘ └──────────┘ └──────────────────┘  ║
+                    ║                                                             ║
+                    ║                    ✓ Pure Logic · Zero I/O                  ║
+                    ╚═════════════════════════════════════════════════════════════╝
+```
+
+</div>
+
+<br>
+
+### The Dependency Rule
+
+**Dependencies point inwards.** The Domain knows nothing of the outside world.
+
+<br>
+
+| Layer | Purpose | Components |
+|:------|:--------|:-----------|
+| **Domain** | Pure business logic | `Models` · `Events` · `Strategy` · `Risk Rules` |
+| **Application** | Orchestration & state | `EventBus` · `ExecutionService` · `RiskService` |
+| **Adapters** | External integrations | `AlpacaBroker` · `PolygonStream` · `TimescaleRepo` |
+| **Infrastructure** | Resilience patterns | `CircuitBreakers` · `Idempotency` · `KillSwitch` |
+
+<br>
+
+---
+
+<br>
+
+## ◈ &nbsp; Features
+
+<table>
+<tr>
+<td width="50%">
+
+### ⚙️ &nbsp; Trading Engine
+- **Strategy**: Golden Cross (SMA Crossover)
+- Configurable fast/slow windows
+- Event-driven signal generation
+- Paper & live execution modes
+
+</td>
+<td width="50%">
+
+### 🛡️ &nbsp; Risk Management
+- Pre-trade buying power checks
+- Position concentration limits
+- Daily loss circuit breakers
+- Automatic kill switch on drawdown
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 📊 &nbsp; Data Infrastructure
+- Bitemporal tick storage
+- Signal audit trail
+- Order & fill persistence
+- Ring buffer market data
+
+</td>
+<td width="50%">
+
+### 🔒 &nbsp; Reliability
+- Circuit breaker patterns
+- Deterministic UUID generation
+- Exactly-once execution semantics
+- Crash-safe recovery
+
+</td>
+</tr>
+</table>
+
+<br>
+
+---
+
+<br>
+
+## ◈ &nbsp; Quick Start
+
+<br>
+
+### Prerequisites
+
+```
+Docker Desktop          Virtualization enabled
+Python                  3.11+
+```
+
+<br>
+
+### 1 &nbsp;│&nbsp; Clone & Navigate
 
 ```bash
-./scripts/make_archive.sh
-python -m http.server 8000 --directory dist
+git clone https://github.com/kyzlo-labs/kyzlo-quant.git
+cd kyzlo-quant
 ```
 
-Then download directly from `http://localhost:8000/kyzlo-quant.zip` (or use the printed `file://` path for a local file URL).
+<br>
 
----
+### 2 &nbsp;│&nbsp; Configuration
 
-## Setup & Environment
+Create `.env` in the project root:
 
-Configuration is driven by environment variables so secrets stay out of version control. Copy `config/settings.example.toml` to `config/settings.toml` as a reference, then export the variables below before running the platform:
+```ini
+# ═══════════════════════════════════════════════════════════════
+#  K Y Z L O   C O N F I G U R A T I O N
+# ═══════════════════════════════════════════════════════════════
 
-| Variable | Description | Example |
-| --- | --- | --- |
-| `ALPACA_API_KEY` / `ALPACA_API_SECRET` | Alpaca API credentials | `paper-key` / `paper-secret` |
-| `ALPACA_BASE_URL` | Alpaca REST endpoint | `https://paper-api.alpaca.markets` |
-| `POLYGON_API_KEY` | Polygon streaming key | `polygon-demo` |
-| `POLYGON_WEBSOCKET_URL` | Polygon WebSocket endpoint | `wss://socket.polygon.io/stocks` |
-| `ALPHA_VANTAGE_API_KEY` | Alpha Vantage credentials | `demo` |
-| `ALPHA_VANTAGE_BASE_URL` | Alpha Vantage REST endpoint | `https://www.alphavantage.co` |
-| `GNEWS_API_KEY` | GNews API key | `gnews-key` |
-| `GNEWS_ENDPOINT` | GNews API endpoint | `https://gnews.io/api/v4/search` |
-| `TIMESCALE_DSN` | TimescaleDB connection string | `postgresql://user:password@localhost:5432/kyzlo` |
-| `RISK_DAILY_LOSS_LIMIT` | Kill switch trigger for daily losses | `1000.0` |
-| `RISK_MAX_NOTIONAL` | Maximum total notional exposure | `100000.0` |
-| `RISK_MAX_POSITION_SYMBOL` | Symbol constrained by position sizing | `AAPL` |
-| `RISK_MAX_POSITION_QUANTITY` | Maximum position size for the constrained symbol | `100` |
+# ── Market Data ──────────────────────────────────────────────────
+POLYGON_API_KEY=your_polygon_key
 
----
+# ── Execution ────────────────────────────────────────────────────
+ALPACA_API_KEY=your_alpaca_key
+ALPACA_SECRET_KEY=your_alpaca_secret
 
-## Architecture Overview
+# ── Intelligence ─────────────────────────────────────────────────
+ALPHA_VANTAGE_API_KEY=your_alphavantage_key
+GNEWS_API_KEY=your_gnews_key
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     EXTERNAL SYSTEMS                            │
-│    Polygon WebSocket · Alpaca REST · Alpha Vantage · GNews     │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  ADAPTERS          Concrete implementations of ports            │
-│  ─────────────────────────────────────────────────────────────  │
-│  PolygonStream   → MarketDataPort                               │
-│  AlpacaBroker    → BrokerPort                                   │
-│  TimescaleRepo   → PersistencePort                              │
-│  AlphaVantage    → FundamentalsPort                             │
-│  GNewsClient     → NewsPort                                     │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  APPLICATION       Orchestration & Event Routing                │
-│  ─────────────────────────────────────────────────────────────  │
-│  EventBus · PartitionedEngine · OrderStateMachine               │
-│  PositionTracker · RiskService · ExecutionService               │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  DOMAIN            Pure Business Logic (No I/O)                 │
-│  ─────────────────────────────────────────────────────────────  │
-│  Strategies · Risk Rules · Kill Switch · Models · Events        │
-└─────────────────────────────────────────────────────────────────┘
+# ── Persistence ──────────────────────────────────────────────────
+POSTGRES_USER=kyzlo
+POSTGRES_PASSWORD=secure_password
+TIMESCALE_CONNECTION_STRING=postgresql://kyzlo:secure_password@timescale:5432/kyzlo_quant
 ```
 
-**Dependency Rule:** Inner layers never import outer layers. Domain knows nothing about Alpaca, Polygon, or TimescaleDB.
+<br>
 
----
+### 3 &nbsp;│&nbsp; Launch
 
-## Key Design Decisions
-
-### 1. Hexagonal Architecture
-The system separates business logic from infrastructure through explicit **ports** (interfaces) and **adapters** (implementations). This enables:
-- Swapping brokers (Alpaca → Interactive Brokers) without touching strategy code
-- Unit testing domain logic with zero external dependencies
-- Clear boundaries for team ownership and code changes
-
-### 2. Event-Driven Processing
-All communication flows through an **EventBus** with typed events:
-```
-TickEvent → SignalEvent → OrderEvent → FillEvent
-```
-This decouples producers from consumers and enables replay/debugging of the full event stream.
-
-### 3. Partitioned Engine
-Events are routed to **per-symbol workers** ensuring FIFO ordering within each symbol. AAPL events never interleave with MSFT, preventing race conditions in position tracking.
-
-### 4. Ring Buffer Backpressure
-During high-volume periods (market open, news events), the system maintains a **maxlen=1 buffer** per symbol—always trading on the latest tick, never on stale data.
-
-### 5. Idempotency Keys
-Signals generate deterministic UUIDs via `hash(symbol + strategy + timestamp)`. On crash recovery, the system regenerates identical UUIDs—brokers reject duplicates automatically.
-
----
-
-## Data Flow: Tick to Trade
-
-| Step | Location | Input → Output |
-|------|----------|----------------|
-| 1. Tick Arrives | `adapters/market_data/polygon.py` | WebSocket JSON → `Tick` in ring buffer |
-| 2. Event Published | `application/bus.py` | `Tick` → `TickEvent` on bus |
-| 3. Engine Routes | `application/engine.py` | `TickEvent` → correct `SymbolWorker` queue |
-| 4. Strategy Thinks | `domain/strategy/golden_cross.py` | `DataFrame` → `Signal` (or None) |
-| 5. Idempotency Key | `infrastructure/idempotency.py` | `Signal` → `Signal` + deterministic UUID |
-| 6. Risk Check | `domain/risk/rules.py` | `Signal` + positions + P&L → `Order` (or rejection) |
-| 7. Order Submitted | `adapters/broker/alpaca.py` | `Order` → HTTPS request with `client_order_id` |
-| 8. Fill Received | `adapters/broker/alpaca.py` | WebSocket update → `FillEvent` |
-| 9. Position Updated | `application/position_tracker.py` | `FillEvent` → in-memory position state |
-| 10. Persisted | `adapters/persistence/timescale.py` | All events → bitemporal storage |
-
----
-
-## Fault Tolerance
-
-### Kill Switch
-Automatic triggers halt all trading:
-- Daily loss limit exceeded
-- Broker connection lost >60 seconds
-- Manual trigger via Discord (`!halt`)
-
-### Circuit Breaker
-Prevents cascading failures when external APIs degrade:
-- After 5 consecutive failures, back off for 60 seconds
-- Protects against hammering dead endpoints
-
-### Bitemporal Persistence
-TimescaleDB stores both **transaction time** (when we learned it) and **valid time** (when it happened). Enables accurate historical analysis and point-in-time debugging.
-
----
-
-## Project Structure
-
-```
-kyzlo_quant/
-├── config/                     # Configuration
-│   ├── settings.toml           # System constants
-│   └── secrets.yaml            # API keys (gitignored)
-│
-├── src/
-│   ├── domain/                 # Pure business logic
-│   │   ├── models.py           # Tick, Signal, Order, Position
-│   │   ├── events.py           # Event types
-│   │   ├── strategy/           # Alpha generation
-│   │   └── risk/               # Risk rules, kill switch
-│   │
-│   ├── ports/                  # Abstract interfaces
-│   │   ├── broker.py           # BrokerPort ABC
-│   │   ├── market_data.py      # MarketDataPort ABC
-│   │   ├── persistence.py      # PersistencePort ABC
-│   │   ├── fundamentals.py     # FundamentalsPort ABC
-│   │   └── news.py             # NewsPort ABC
-│   │
-│   ├── application/            # Orchestration
-│   │   ├── bus.py              # EventBus (pub/sub)
-│   │   ├── engine.py           # PartitionedEngine
-│   │   ├── fsm.py              # OrderStateMachine
-│   │   └── services.py         # Risk, Execution services
-│   │
-│   ├── adapters/               # Concrete implementations
-│   │   ├── market_data/polygon.py
-│   │   ├── broker/alpaca.py
-│   │   ├── persistence/timescale.py
-│   │   ├── fundamentals/alpha_vantage.py
-│   │   └── news/gnews.py
-│   │
-│   └── infrastructure/         # Cross-cutting utilities
-│       ├── resilience.py       # CircuitBreaker, retry logic
-│       ├── idempotency.py      # UUID generation
-│       └── clock.py            # Live/Backtest clock
-│
-├── tests/
-│   ├── unit/                   # Domain layer tests
-│   ├── integration/            # Adapter tests
-│   └── e2e/                    # Full system tests
-│
-├── docker/
-│   ├── timescale/init.sql      # Bitemporal schema
-│   └── app.Dockerfile
-│
-└── main.py                     # Entry point
+```bash
+docker-compose up -d
 ```
 
+<br>
+
 ---
 
-## Order State Machine
+<br>
+
+## ◈ &nbsp; Adapter Matrix
+
+<br>
+
+<div align="center">
+
+| Function | Provider | Protocol | Status |
+|:---------|:---------|:---------|:------:|
+| Execution | Alpaca | REST / WS | `✓ Live` |
+| Market Data | Polygon | WebSocket | `✓ Live` |
+| Persistence | TimescaleDB | AsyncPG | `✓ Live` |
+| Fundamentals | Alpha Vantage | REST | `✓ Live` |
+| Sentiment | GNews | REST | `✓ Live` |
+
+</div>
+
+<br>
+
+---
+
+<br>
+
+<div align="center">
+
+### Built by **Kyzlo Labs**
+
+<br>
 
 ```
-              ┌─────────┐
-              │ PENDING │
-              └────┬────┘
-                   │ submit()
-                   ▼
-              ┌─────────────┐
-        ┌─────│  SUBMITTED  │─────┐
-        │     └──────┬──────┘     │
-   reject()       fill()      timeout()
-        │            │            │
-        ▼            ▼            ▼
-  ┌──────────┐ ┌──────────┐ ┌──────────────┐
-  │ REJECTED │ │  FILLED  │ │CANCEL_PENDING│
-  └──────────┘ └──────────┘ └──────┬───────┘
-                                   │ confirmed()
-                                   ▼
-                             ┌───────────┐
-                             │ CANCELLED │
-                             └───────────┘
+        ╱╲
+       ╱  ╲
+      ╱ ◈  ╲
+     ╱──────╲
+    ╱   ██   ╲
+   ╱    ██    ╲
+  ╱─────██─────╲
+ ╱      ██      ╲
+╱────────────────╲
 ```
 
----
+<br>
 
-## Tech Stack
+*Where alpha meets architecture*
 
-| Component | Technology |
-|-----------|------------|
-| Language | Python 3.11+ (async/await) |
-| Market Data | Polygon.io WebSocket |
-| Fundamentals | Alpha Vantage API |
-| News/Sentiment | GNews API |
-| Broker | Alpaca Markets API |
-| Database | TimescaleDB (bitemporal) |
-| Container | Docker Compose |
-| Monitoring | Discord bot integration |
+<br>
 
----
+[![GitHub](https://img.shields.io/badge/GitHub-Kyzlo_Labs-181717?style=flat-square&logo=github)](/)
+[![Twitter](https://img.shields.io/badge/Twitter-@kyzlo__labs-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](/)
 
-## Interactive Architecture Diagram
-
-The repository includes an interactive React component (`kyzlo_architecture.jsx`) that visualizes:
-- Expandable folder structure with file-level documentation
-- Step-by-step data flow animation
-- Layer color coding (Domain, Ports, Application, Adapters, Infrastructure)
-
----
-
-## License
-
-MIT
+</div>
