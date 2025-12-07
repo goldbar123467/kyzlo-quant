@@ -3,9 +3,10 @@ import asyncio
 from src import config
 from src.application.bus import EventBus
 from src.application.engine import PartitionedEngine
+from src.application.position_tracker import PositionTracker
 from src.application.services import ExecutionService, RiskService
 from src.domain.events import FillEvent, OrderEvent, SignalEvent, TickEvent
-from src.domain.models import Position, Tick
+from src.domain.models import Tick
 from src.domain.strategy.golden_cross import GoldenCrossStrategy
 from src.infrastructure.idempotency import generate_signal_id
 from src.infrastructure.logging import get_logger
@@ -23,10 +24,11 @@ async def run() -> None:
     execution_service: ExecutionService = components["execution_service"]
 
     strategy = GoldenCrossStrategy(strategy_id="golden-cross", id_generator=generate_signal_id)
-    positions: dict[str, Position] = {"AAPL": Position(symbol="AAPL")}
+    tracker = PositionTracker()
     broker_connected = True
 
     async def on_tick(event: TickEvent) -> None:
+        tracker.update_market_price(event.symbol, event.price)
         tick = Tick(symbol=event.symbol, price=event.price, timestamp=event.timestamp)
         signal = strategy.on_tick(tick)
         if signal:
@@ -43,7 +45,12 @@ async def run() -> None:
 
     async def on_signal(event: SignalEvent) -> None:
         try:
-            risk_service.validate(event, positions.values(), pnl=0.0, broker_connected=broker_connected)
+            risk_service.validate(
+                event,
+                tracker.get_positions(),
+                pnl=tracker.get_total_pnl(),
+                broker_connected=broker_connected,
+            )
         except Exception as exc:
             logger.error("risk_validation_failed", error=str(exc))
             return
@@ -61,8 +68,7 @@ async def run() -> None:
         await execution_service.submit(event)
 
     async def on_fill(event: FillEvent) -> None:
-        position = positions.setdefault(event.symbol, Position(symbol=event.symbol))
-        position.apply_fill(event.side, event.quantity, event.price)
+        tracker.handle_fill(event)
         await persistence.persist_event(event)
 
     await bus.subscribe(TickEvent, on_tick)
