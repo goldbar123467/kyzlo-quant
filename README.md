@@ -9,16 +9,18 @@ A production-grade algorithmic trading system built on **Hexagonal Architecture*
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     EXTERNAL SYSTEMS                            │
-│              Polygon WebSocket  ·  Alpaca REST API              │
+│    Polygon WebSocket · Alpaca REST · Alpha Vantage · GNews     │
 └───────────────────────────┬─────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  ADAPTERS          Concrete implementations of ports            │
 │  ─────────────────────────────────────────────────────────────  │
-│  PolygonStream → MarketDataPort                                 │
-│  AlpacaBroker  → BrokerPort                                     │
-│  TimescaleRepo → PersistencePort                                │
+│  PolygonStream   → MarketDataPort                               │
+│  AlpacaBroker    → BrokerPort                                   │
+│  TimescaleRepo   → PersistencePort                              │
+│  AlphaVantage    → FundamentalsPort                             │
+│  GNewsClient     → NewsPort                                     │
 └───────────────────────────┬─────────────────────────────────────┘
                             │
                             ▼
@@ -120,7 +122,9 @@ kyzlo_quant/
 │   ├── ports/                  # Abstract interfaces
 │   │   ├── broker.py           # BrokerPort ABC
 │   │   ├── market_data.py      # MarketDataPort ABC
-│   │   └── persistence.py      # PersistencePort ABC
+│   │   ├── persistence.py      # PersistencePort ABC
+│   │   ├── fundamentals.py     # FundamentalsPort ABC
+│   │   └── news.py             # NewsPort ABC
 │   │
 │   ├── application/            # Orchestration
 │   │   ├── bus.py              # EventBus (pub/sub)
@@ -131,7 +135,9 @@ kyzlo_quant/
 │   ├── adapters/               # Concrete implementations
 │   │   ├── market_data/polygon.py
 │   │   ├── broker/alpaca.py
-│   │   └── persistence/timescale.py
+│   │   ├── persistence/timescale.py
+│   │   ├── fundamentals/alpha_vantage.py
+│   │   └── news/gnews.py
 │   │
 │   └── infrastructure/         # Cross-cutting utilities
 │       ├── resilience.py       # CircuitBreaker, retry logic
@@ -184,6 +190,8 @@ kyzlo_quant/
 |-----------|------------|
 | Language | Python 3.11+ (async/await) |
 | Market Data | Polygon.io WebSocket |
+| Fundamentals | Alpha Vantage API |
+| News/Sentiment | GNews API |
 | Broker | Alpaca Markets API |
 | Database | TimescaleDB (bitemporal) |
 | Container | Docker Compose |
