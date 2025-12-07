@@ -17,6 +17,28 @@ Then download directly from `http://localhost:8000/kyzlo-quant.zip` (or use the 
 
 ---
 
+## Setup & Environment
+
+Configuration is driven by environment variables so secrets stay out of version control. Copy `config/settings.example.toml` to `config/settings.toml` as a reference; values from `config/settings.toml` are loaded automatically and can be overridden by exported environment variables. Export the variables below (or rely on the config file) before running the platform:
+
+| Variable | Description | Example |
+| --- | --- | --- |
+| `ALPACA_API_KEY` / `ALPACA_API_SECRET` | Alpaca API credentials | `paper-key` / `paper-secret` |
+| `ALPACA_BASE_URL` | Alpaca REST endpoint | `https://paper-api.alpaca.markets` |
+| `POLYGON_API_KEY` | Polygon streaming key | `polygon-demo` |
+| `POLYGON_WEBSOCKET_URL` | Polygon WebSocket endpoint | `wss://socket.polygon.io/stocks` |
+| `ALPHA_VANTAGE_API_KEY` | Alpha Vantage credentials | `demo` |
+| `ALPHA_VANTAGE_BASE_URL` | Alpha Vantage REST endpoint | `https://www.alphavantage.co` |
+| `GNEWS_API_KEY` | GNews API key | `gnews-key` |
+| `GNEWS_ENDPOINT` | GNews API endpoint | `https://gnews.io/api/v4/search` |
+| `TIMESCALE_DSN` | TimescaleDB connection string | `postgresql://user:password@localhost:5432/kyzlo` |
+| `RISK_DAILY_LOSS_LIMIT` | Kill switch trigger for daily losses | `1000.0` |
+| `RISK_MAX_NOTIONAL` | Maximum total notional exposure | `100000.0` |
+| `RISK_MAX_POSITION_SYMBOL` | Symbol constrained by position sizing | `AAPL` |
+| `RISK_MAX_POSITION_QUANTITY` | Maximum position size for the constrained symbol | `100` |
+
+---
+
 ## Architecture Overview
 
 ```

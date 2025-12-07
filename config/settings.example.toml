@@ -1,0 +1,28 @@
+# Example configuration for KYZLO Quant Platform
+# Copy this file to config/settings.toml and export the variables as environment overrides.
+
+[alpaca]
+api_key = "your-alpaca-api-key"
+api_secret = "your-alpaca-api-secret"
+base_url = "https://paper-api.alpaca.markets"
+
+[polygon]
+api_key = "your-polygon-api-key"
+websocket_url = "wss://socket.polygon.io/stocks"
+
+[alpha_vantage]
+api_key = "your-alpha-vantage-key"
+base_url = "https://www.alphavantage.co"
+
+[gnews]
+api_key = "your-gnews-api-key"
+endpoint = "https://gnews.io/api/v4/search"
+
+[timescale]
+dsn = "postgresql://user:password@localhost:5432/kyzlo"
+
+[risk]
+daily_loss_limit = 1000.0
+max_notional = 100000.0
+max_position_symbol = "AAPL"
+max_position_quantity = 100
