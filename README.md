@@ -4,6 +4,19 @@ A production-grade algorithmic trading system built on **Hexagonal Architecture*
 
 ---
 
+## Direct Download
+
+Run the helper script to generate a zip archive of the current branch and expose it via a lightweight HTTP server:
+
+```bash
+./scripts/make_archive.sh
+python -m http.server 8000 --directory dist
+```
+
+Then download directly from `http://localhost:8000/kyzlo-quant.zip` (or use the printed `file://` path for a local file URL).
+
+---
+
 ## Architecture Overview
 
 ```
