@@ -9,7 +9,9 @@ from ...ports.market_data import MarketDataPort
 class PolygonStream(MarketDataPort):
     """Simulated Polygon market data stream using ring buffers."""
 
-    def __init__(self) -> None:
+    def __init__(self, api_key: str, websocket_url: str) -> None:
+        self.api_key = api_key
+        self.websocket_url = websocket_url
         self._handlers: Dict[str, Callable[[TickEvent], Awaitable[None]]] = {}
         self._buffers: DefaultDict[str, Deque[TickEvent]] = defaultdict(lambda: deque(maxlen=1))
         self._queue: asyncio.Queue[TickEvent] = asyncio.Queue()

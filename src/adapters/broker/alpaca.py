@@ -7,7 +7,10 @@ from ...ports.broker import BrokerPort
 class AlpacaBroker(BrokerPort):
     """Lightweight simulated Alpaca broker adapter."""
 
-    def __init__(self) -> None:
+    def __init__(self, api_key: str, api_secret: str, base_url: str) -> None:
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.base_url = base_url
         self._fills: asyncio.Queue[FillEvent] = asyncio.Queue()
         self.submitted: list[OrderEvent] = []
         self.cancelled: list[str] = []
